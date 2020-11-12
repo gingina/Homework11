@@ -53,6 +53,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EmployeesAndDepartments.cs" />
     <Compile Include="Intern.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Employee.cs" />

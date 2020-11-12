@@ -12,14 +12,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TreeView>
-            <TreeViewItem Header="TreeViewItem" Height="100" Width="100" IsExpanded="True">
-                <TreeViewItem Header="TreeViewItem" HorizontalAlignment="Left" Height="100" Width="81" IsExpanded="True">
-                    <TreeViewItem Header="TreeViewItem" HorizontalAlignment="Left" Height="100" Width="72"/>
-                    <TreeViewItem Header="TreeViewItem" HorizontalAlignment="Left" Height="100" Width="72"/>
-                </TreeViewItem>
-            </TreeViewItem>
-        </TreeView>
+        <TreeView x:Name="Tree" Grid.ColumnSpan="1" Initialized="Tree_Initialized"/>
 
     </Grid>
 </Window>

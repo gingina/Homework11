@@ -18,15 +18,16 @@ namespace WpfApplication1
             InsertedDepartments = insertedDepartments;
         }
 
+        public Department(List<Department> insertedDepartments, string name) : this(insertedDepartments, new List<Employee>(), name, DateTime.Now)
+        {
+            Employees = null;
+        }
+
         public Department(List<Employee> employees, string name) : this(new List<Department>(), employees, name, DateTime.Now)
         {
             InsertedDepartments = null;
         }
 
-        public Department(List<Department> insertedDepartments, string name) : this(insertedDepartments, new List<Employee>(), name, DateTime.Now)
-        {
-            Employees = null;
-        }
         
         #endregion
 
