@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Configuration;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -16,42 +17,34 @@ namespace WpfApplication1
     public partial class MainWindow
     {
         public Department company;
+        public string dataBasePath = "Data.json";
 
         public MainWindow()
         {
-            var employees1 = new List<Employee>();
-            var employees2 = new List<Employee>();
-            var employees3 = new List<Employee>();
+            company = CreateDepartment();
+            company = DeserializeJson(dataBasePath);
 
-            for (int i = 0; i < 5; i++) employees1.Add(new Worker($"1Worker {i + 1}", i, (i + 1) * 1000));
-            for (int i = 0; i < 5; i++) employees2.Add(new Worker($"2Worker {i + 1}", i, (i + 1) * 1000));
-            for (int i = 0; i < 5; i++) employees3.Add(new Worker($"3Worker {i + 1}", i, (i + 1) * 1000));
-
-            var dep1 = new Department(employees1, "Dep1");
-            var dep2 = new Department(employees2, "Dep2");
-            var dep3 = new Department(employees3, "Dep3");
-
-            var dep4 = new Department(new List<Department> { dep2, dep3 }, "dep4");
-
-            var deps = new List<Department> { dep1, dep4 };
-
-            company = new Department(deps, "MainDep");
-
-            var manager1 = new Manager(company, "manager1", 0, 10000);
-
-            company.Manager = manager1;
-
-            //SerializeJson("Data.json");
+            SerializeJson(dataBasePath);
         }
 
         public void SerializeJson(string path)
         {
             var serialized = JsonConvert.SerializeObject(company, Formatting.Indented, new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
 
             File.WriteAllText(path, serialized);
+        }
+
+        public Department DeserializeJson(string path)
+        {
+            var text = File.ReadAllText(path);
+
+            return JsonConvert.DeserializeObject<Department>(text, new JsonSerializerSettings 
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            });
         }
 
         private void Tree_Initialized(object sender, EventArgs e)
@@ -112,6 +105,33 @@ namespace WpfApplication1
                     item.Items.Add(subItem);
                 }
             }
+        }
+
+        private Department CreateDepartment()
+        {
+            var employees1 = new List<Employee>();
+            var employees2 = new List<Employee>();
+            var employees3 = new List<Employee>();
+
+            for (int i = 0; i < 5; i++) employees1.Add(new Worker($"1Worker {i + 1}", i, (i + 1) * 1000));
+            for (int i = 0; i < 5; i++) employees2.Add(new Worker($"2Worker {i + 1}", i, (i + 1) * 1000));
+            for (int i = 0; i < 5; i++) employees3.Add(new Worker($"3Worker {i + 1}", i, (i + 1) * 1000));
+
+            var manager1 = new Manager("Boss1", 1, 10000);
+            var manager2 = new Manager("Boss2", 2, 100000);
+            var manager3 = new Manager("Boss3", 3, 100000);
+            var manager4 = new Manager("Boss4", 4, 100000);
+            var ceo = new Manager("CEO", 0, 1000000);
+
+            var dep1 = new Department(manager1, employees1, "Dep1");
+            var dep2 = new Department(manager2, employees2, "Dep2");
+            var dep3 = new Department(manager3, employees3, "Dep3");
+
+            var dep4 = new Department(ceo, new List<Department> { dep2, dep3 }, "dep4");
+
+            var deps = new List<Department> { dep1, dep4 };
+
+            return new Department(manager4, deps, "MainDep");
         }
     }
 }

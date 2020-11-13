@@ -6,16 +6,14 @@ using System.Threading.Tasks;
 
 namespace WpfApplication1
 {
-    class Manager : Employee
+    public class Manager : Employee
     {
-        public Manager(Department department, string firstName, int id, int salary) : base(firstName, id, salary)
+        public Manager(string firstName, int id, int salary) : base(firstName, id, salary)
         {
             Position = "Руководитель";
-            Department = department;
         }
 
         public override string Position { get; set; }
 
-        public Department Department { get; set; }
     }
 }

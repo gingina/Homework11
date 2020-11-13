@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -9,8 +10,10 @@ namespace WpfApplication1
 
         #region Конструкторы
 
-        public Department(List<Department> insertedDepartments, List<Employee> employees, string name, DateTime dateTime)
+        [JsonConstructor]
+        public Department(Manager manager, List<Department> insertedDepartments, List<Employee> employees, string name, DateTime dateTime)
         {
+            Manager = manager;
             Employees = employees;
             Name = name;
             CreationDate = dateTime;
@@ -18,12 +21,12 @@ namespace WpfApplication1
             InsertedDepartments = insertedDepartments;
         }
 
-        public Department(List<Department> insertedDepartments, string name) : this(insertedDepartments, new List<Employee>(), name, DateTime.Now)
+        public Department(Manager manager, List<Department> insertedDepartments, string name) : this(manager, insertedDepartments, new List<Employee>(), name, DateTime.Now)
         {
             Employees = null;
         }
 
-        public Department(List<Employee> employees, string name) : this(new List<Department>(), employees, name, DateTime.Now)
+        public Department(Manager manager, List<Employee> employees, string name) : this(manager, new List<Department>(), employees, name, DateTime.Now)
         {
             InsertedDepartments = null;
         }
@@ -38,7 +41,7 @@ namespace WpfApplication1
         /// </summary>
         public List<Employee> Employees { get; set; }
         
-        public Employee Manager { get; set; }
+        public Manager Manager { get; set; }
         
         /// <summary>
         /// Вложенные департаменты

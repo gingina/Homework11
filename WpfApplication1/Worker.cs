@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfApplication1
 {
-    class Worker : Employee
+    public class Worker : Employee
     {
         public Worker(string firstName, int id, int salary) : base(firstName, id, salary)
         {

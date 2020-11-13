@@ -6,13 +6,48 @@
         xmlns:local="clr-namespace:WpfApplication1"
         mc:Ignorable="d"
         Title="MainWindow" MinHeight="400" MinWidth="640">
-    <Grid>
+    <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <TreeView x:Name="Tree" Grid.ColumnSpan="1" Initialized="Tree_Initialized"/>
+        <!-- Дерево структуры -->
+        <TreeView x:Name="Tree" Grid.Column="0" Initialized="Tree_Initialized"/>
+        
+        <!-- Инфо о департаменте и о рабочем -->
+        <Border Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Padding="5" BorderThickness="1" BorderBrush="Black">
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="Информация о департаменте"
+                           HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <TextBlock Text="Наименование"/>
+                        <TextBox x:Name="DepartmentNameBox"/>
+                        <Grid Margin="5 10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Департаментов" Margin="0 0 0 5" HorizontalAlignment="Center"/>
+                                <TextBox IsReadOnly="True" x:Name="InsertedDepartmentsCountBox" Background="#eee" Margin="0 0 0 5"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Работников" Margin="5 0 0 5" HorizontalAlignment="Center"/>
+                                <TextBox IsReadOnly="True" x:Name="EmloyeesCountBox" Background="#eee" Margin="5 0 0 0"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                
+            </Grid>
+        </Border>
+        
     </Grid>
 </Window>
