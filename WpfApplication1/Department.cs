@@ -17,18 +17,21 @@ namespace WpfApplication1
             Employees = employees;
             Name = name;
             CreationDate = dateTime;
-            EmployeesCount = 0;
             InsertedDepartments = insertedDepartments;
         }
 
         public Department(Manager manager, List<Department> insertedDepartments, string name) : this(manager, insertedDepartments, new List<Employee>(), name, DateTime.Now)
         {
             Employees = null;
+            EmployeesCount = 0;
+            InsertedDepartmentsCount = insertedDepartments.Count;
         }
 
         public Department(Manager manager, List<Employee> employees, string name) : this(manager, new List<Department>(), employees, name, DateTime.Now)
         {
             InsertedDepartments = null;
+            EmployeesCount = employees.Count;
+            InsertedDepartmentsCount = 0;
         }
 
         
@@ -62,6 +65,11 @@ namespace WpfApplication1
         /// Количество сотрудников
         /// </summary>
         public int EmployeesCount { get; set; }  
+
+        /// <summary>
+        /// Количество вложенных департаментов
+        /// </summary>
+        public int InsertedDepartmentsCount { get; set; }
 
         #endregion
 

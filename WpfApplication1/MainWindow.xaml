@@ -28,12 +28,12 @@
                            HorizontalAlignment="Center" FontWeight="Bold"/>
                         <TextBlock Text="Наименование"/>
                         <TextBox x:Name="DepartmentNameBox"/>
+                        <!-- Кол-во депов и воркеров-->
                         <Grid Margin="5 10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-
                             <StackPanel Grid.Column="0">
                                 <TextBlock Text="Департаментов" Margin="0 0 0 5" HorizontalAlignment="Center"/>
                                 <TextBox IsReadOnly="True" x:Name="InsertedDepartmentsCountBox" Background="#eee" Margin="0 0 0 5"/>
@@ -43,6 +43,21 @@
                                 <TextBox IsReadOnly="True" x:Name="EmloyeesCountBox" Background="#eee" Margin="5 0 0 0"/>
                             </StackPanel>
                         </Grid>
+                        <!-- Дата создания -->
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Дата создания"/>
+                            <TextBox x:Name="DepartmentCreationDateBox" IsReadOnly="True" Background="#eee"/>
+                        </StackPanel>
+                        <!-- Инфо о начальнике (имя) -->
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Имя начальника"/>
+                            <TextBox x:Name="ManagerNameBox"/>
+                        </StackPanel>
+                        <!-- Инфо о начальнике (зп) -->
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Зарплата начальника"/>
+                            <TextBox x:Name="ManagerSalaryBox" IsReadOnly="True" Background="#eee"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
                 

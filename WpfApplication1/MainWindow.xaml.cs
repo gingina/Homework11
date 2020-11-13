@@ -70,9 +70,17 @@ namespace WpfApplication1
         private void Item_Selected(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
-            var info = (EmployeesAndDepartments)(item.Tag);
+            //var info = (EmployeesAndDepartments)(item.Tag);
 
-            DepartmentNameBox.Text = item.Header.ToString();
+            //DepartmentNameBox.Text = item.Header.ToString();
+
+            //if (item.Parent != null)
+            //{
+            //    if (item.Parent is TreeView) return;
+            //    else if (item.Parent is TreeViewItem) ((TreeViewItem)item.Parent).IsSelected = false;
+            //} 
+
+            DepartmentNameBox.Text = ((TreeViewItem)Tree.SelectedItem).Header.ToString();
 
         }
 
@@ -99,6 +107,7 @@ namespace WpfApplication1
 
                     subItem.Expanded += Folder_Expanded;
                     subItem.Selected += Item_Selected;
+                    //subItem.MouseDoubleClick += Item_Selected;
 
                     item.Items.Add(subItem);
                 }
