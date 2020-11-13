@@ -22,7 +22,7 @@ namespace WpfApplication1
         public MainWindow()
         {
             company = CreateDepartment();
-            company = DeserializeJson(dataBasePath);
+            //company = DeserializeJson(dataBasePath);
 
             SerializeJson(dataBasePath);
         }
@@ -49,7 +49,6 @@ namespace WpfApplication1
 
         private void Tree_Initialized(object sender, EventArgs e)
         {
-
             foreach (var dep in company.InsertedDepartments)
             {
                 var item = new TreeViewItem()
@@ -61,9 +60,20 @@ namespace WpfApplication1
                 item.Items.Add(null);
 
                 item.Expanded += Folder_Expanded;
+                item.Selected += Item_Selected;
+                
 
                 Tree.Items.Add(item);
             }
+        }
+
+        private void Item_Selected(object sender, RoutedEventArgs e)
+        {
+            var item = (TreeViewItem)sender;
+            var info = (EmployeesAndDepartments)(item.Tag);
+
+            DepartmentNameBox.Text = item.Header.ToString();
+
         }
 
         private void Folder_Expanded(object sender, RoutedEventArgs e)
@@ -88,6 +98,7 @@ namespace WpfApplication1
                     subItem.Items.Add(null);
 
                     subItem.Expanded += Folder_Expanded;
+                    subItem.Selected += Item_Selected;
 
                     item.Items.Add(subItem);
                 }
@@ -103,6 +114,7 @@ namespace WpfApplication1
                     };
 
                     item.Items.Add(subItem);
+                    subItem.Selected += Item_Selected;
                 }
             }
         }
