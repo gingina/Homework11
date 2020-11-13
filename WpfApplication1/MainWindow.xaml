@@ -22,8 +22,9 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Border Padding="5" BorderThickness="1" BorderBrush="Black">
-                    <StackPanel Grid.Row="0">
+                <!-- Инфо о деп -->
+                <Border Grid.Row="0" Padding="5" BorderThickness="1" BorderBrush="Black">
+                    <StackPanel>
                         <TextBlock Text="Информация о департаменте"
                            HorizontalAlignment="Center" FontWeight="Bold"/>
                         <TextBlock Text="Наименование"/>
@@ -60,7 +61,25 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-                
+                <!-- Инфо о сотруднике -->
+                <Border Grid.Row="1" Padding="5" BorderThickness="1" BorderBrush="Black">
+                    <StackPanel>
+                        <TextBlock Text="Информация о сотруднике"
+                           HorizontalAlignment="Center" FontWeight="Bold"/>
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Имя"/>
+                            <TextBox x:Name="EmployeeNameBox" IsReadOnly="True" Background="#eee"/>
+                        </StackPanel>
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Должность"/>
+                            <TextBox x:Name="EmployeePositionBox" IsReadOnly="True" Background="#eee"/>
+                        </StackPanel>
+                        <StackPanel Margin="0 5">
+                            <TextBlock Text="Зарплата"/>
+                            <TextBox x:Name="EmployeeSalaryBox" IsReadOnly="True" Background="#eee"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Border>
         

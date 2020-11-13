@@ -18,6 +18,8 @@ namespace WpfApplication1
             Name = name;
             CreationDate = dateTime;
             InsertedDepartments = insertedDepartments;
+
+            Manager.Department = this;
         }
 
         public Department(Manager manager, List<Department> insertedDepartments, string name) : this(manager, insertedDepartments, new List<Employee>(), name, DateTime.Now)
@@ -70,6 +72,7 @@ namespace WpfApplication1
         /// Количество вложенных департаментов
         /// </summary>
         public int InsertedDepartmentsCount { get; set; }
+
 
         #endregion
 

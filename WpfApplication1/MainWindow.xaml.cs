@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Configuration;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -18,6 +19,9 @@ namespace WpfApplication1
     {
         public Department company;
         public string dataBasePath = "Data.json";
+
+        private Department selectedDepartment;
+        private Employee selectedEmployee;
 
         public MainWindow()
         {
@@ -54,7 +58,7 @@ namespace WpfApplication1
                 var item = new TreeViewItem()
                 {
                     Header = dep.Name,
-                    Tag = new EmployeesAndDepartments(dep.InsertedDepartments, dep.Employees)
+                    Tag = dep
                 };
 
                 item.Items.Add(null);
@@ -69,45 +73,68 @@ namespace WpfApplication1
 
         private void Item_Selected(object sender, RoutedEventArgs e)
         {
-            var item = (TreeViewItem)sender;
-            //var info = (EmployeesAndDepartments)(item.Tag);
+            var item = (TreeViewItem)(Tree.SelectedItem);
 
-            //DepartmentNameBox.Text = item.Header.ToString();
+            if (item.Tag is Department)
+            {
+                var department = (Department)(item.Tag);
+                SetDepartmentValues(department);
 
-            //if (item.Parent != null)
-            //{
-            //    if (item.Parent is TreeView) return;
-            //    else if (item.Parent is TreeViewItem) ((TreeViewItem)item.Parent).IsSelected = false;
-            //} 
+                selectedDepartment = department;
+            }
+            else if (item.Tag is Employee)
+            {
+                var employee = (Employee)(item.Tag);
+                var parent = (Department)(((TreeViewItem)(item.Parent)).Tag);
 
-            DepartmentNameBox.Text = ((TreeViewItem)Tree.SelectedItem).Header.ToString();
+                selectedDepartment = parent;
+                selectedEmployee = employee;
 
+                SetEmployeeValues(employee);
+                SetDepartmentValues(parent);
+            }
+        }
+
+        private void SetDepartmentValues(Department department)
+        {
+            DepartmentNameBox.Text = department.Name;
+            InsertedDepartmentsCountBox.Text = department.InsertedDepartmentsCount.ToString();
+            EmloyeesCountBox.Text = department.EmployeesCount.ToString();
+            DepartmentCreationDateBox.Text = department.CreationDate.ToString();
+            ManagerNameBox.Text = department.Manager.FirstName;
+            ManagerSalaryBox.Text = department.Manager.Salary.ToString();
+        }
+
+        private void SetEmployeeValues(Employee employee)
+        {
+            EmployeeNameBox.Text = employee.FirstName;
+            EmployeePositionBox.Text = employee.Position;
+            EmployeeSalaryBox.Text = employee.Salary.ToString();
         }
 
         private void Folder_Expanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
 
-            var obj = (EmployeesAndDepartments)item.Tag;
+            var obj = (Department)item.Tag;
 
             if (item.Items.Count != 1 || item.Items[0] != null) return;
 
-            if (obj.Departments != null)
+            if (obj.InsertedDepartments != null)
             {
-                var list = obj.Departments;
+                var list = obj.InsertedDepartments;
                 foreach (var dep in list)
                 {
                     var subItem = new TreeViewItem()
                     {
                         Header = dep.Name,
-                        Tag = new EmployeesAndDepartments(dep.InsertedDepartments, dep.Employees)
+                        Tag = dep
                     };
 
                     subItem.Items.Add(null);
 
                     subItem.Expanded += Folder_Expanded;
                     subItem.Selected += Item_Selected;
-                    //subItem.MouseDoubleClick += Item_Selected;
 
                     item.Items.Add(subItem);
                 }
@@ -120,6 +147,7 @@ namespace WpfApplication1
                     var subItem = new TreeViewItem()
                     {
                         Header = emp.FirstName,
+                        Tag = emp
                     };
 
                     item.Items.Add(subItem);
@@ -138,11 +166,11 @@ namespace WpfApplication1
             for (int i = 0; i < 5; i++) employees2.Add(new Worker($"2Worker {i + 1}", i, (i + 1) * 1000));
             for (int i = 0; i < 5; i++) employees3.Add(new Worker($"3Worker {i + 1}", i, (i + 1) * 1000));
 
-            var manager1 = new Manager("Boss1", 1, 10000);
-            var manager2 = new Manager("Boss2", 2, 100000);
-            var manager3 = new Manager("Boss3", 3, 100000);
-            var manager4 = new Manager("Boss4", 4, 100000);
-            var ceo = new Manager("CEO", 0, 1000000);
+            var manager1 = new Manager("Boss1", 1);
+            var manager2 = new Manager("Boss2", 2);
+            var manager3 = new Manager("Boss3", 3);
+            var manager4 = new Manager("Boss4", 4);
+            var ceo = new Manager("CEO", 0);
 
             var dep1 = new Department(manager1, employees1, "Dep1");
             var dep2 = new Department(manager2, employees2, "Dep2");
