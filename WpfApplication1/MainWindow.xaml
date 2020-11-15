@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApplication1"
         mc:Ignorable="d"
-        Title="MainWindow" MinHeight="400" MinWidth="640">
+        Title="MainWindow" MinHeight="800" MinWidth="800" d:DesignHeight="807.5">
     <Grid >
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
@@ -13,8 +13,13 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
         <!-- Дерево структуры -->
-        <TreeView x:Name="Tree" Grid.Column="0" Initialized="Tree_Initialized"/>
-        
+        <TreeView x:Name="Tree" Grid.Column="0" Initialized="Tree_Initialized" FontSize="30"/>
+
+        <Canvas>
+            <Button Margin="5" Height="30" Width="80" Canvas.Bottom="0" Content="Сохранить" Click="SaveButton_Click"/>
+            <Button Margin="5" Height="30" Width="123" Canvas.Bottom="0" Content="Отменить изменения" Click="RevertButton_Click" Canvas.Right="0"/>
+        </Canvas>
+
         <!-- Инфо о департаменте и о рабочем -->
         <Border Grid.Column="1">
             <Grid>
@@ -27,8 +32,16 @@
                     <StackPanel>
                         <TextBlock Text="Информация о департаменте"
                            HorizontalAlignment="Center" FontWeight="Bold"/>
+
                         <TextBlock Text="Наименование"/>
-                        <TextBox x:Name="DepartmentNameBox"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="DepartmentNameBox" Grid.Column="0"/>
+                            <Button Margin="5 0" Grid.Column="1" Content="Изменить" FontSize="10" Click="DepNameButton_Click"/>
+                        </Grid>
                         <!-- Кол-во депов и воркеров-->
                         <Grid Margin="5 10">
                             <Grid.ColumnDefinitions>
@@ -52,13 +65,22 @@
                         <!-- Инфо о начальнике (имя) -->
                         <StackPanel Margin="0 5">
                             <TextBlock Text="Имя начальника"/>
-                            <TextBox x:Name="ManagerNameBox"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox x:Name="ManagerNameBox" Grid.Column="0"/>
+                                <Button Margin="5 0" Grid.Column="1" Content="Изменить" FontSize="10" Click="ManagerNameButton_Click"/>
+
+                            </Grid>
                         </StackPanel>
                         <!-- Инфо о начальнике (зп) -->
                         <StackPanel Margin="0 5">
                             <TextBlock Text="Зарплата начальника"/>
                             <TextBox x:Name="ManagerSalaryBox" IsReadOnly="True" Background="#eee"/>
                         </StackPanel>
+                        <Button Content="Удалить этот департамент" Click="DeleteDepartment_ButtonClick"/>
                     </StackPanel>
                 </Border>
                 <!-- Инфо о сотруднике -->
@@ -78,10 +100,60 @@
                             <TextBlock Text="Зарплата"/>
                             <TextBox x:Name="EmployeeSalaryBox" IsReadOnly="True" Background="#eee"/>
                         </StackPanel>
+                        <Button Content="Удалить этого сотрудника" Click="DeleteEmployee_ButtonClick"/>
                     </StackPanel>
                 </Border>
             </Grid>
         </Border>
-        
+
+
+        <Grid Grid.Column ="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border BorderThickness="1" BorderBrush="Black" Grid.Row="0" Padding="5">
+                <StackPanel>
+                    <TextBlock Text=" Добавить департамент"
+                           HorizontalAlignment="Center" FontWeight="Bold"/>
+
+                    <TextBlock Text="Наименование"/>
+                    <TextBox x:Name="CreateDepartmentNameBox" Grid.Column="0"/>
+
+                    <StackPanel Margin="0 5">
+                        <TextBlock Text="Имя начальника"/>
+                        <TextBox x:Name="CreateManagerNameBox" Grid.Column="0"/>
+                    </StackPanel>
+                    <Button Content="Добавить" Margin="0 5" Click="AddDepartmentButton_Click"/>
+                </StackPanel>
+
+            </Border>
+            <Border BorderThickness="1" BorderBrush="Black" Grid.Row="1">
+                <StackPanel>
+                    <TextBlock Text=" Добавить сотрудника"
+                           HorizontalAlignment="Center" FontWeight="Bold"/>
+
+                    <TextBlock Text="Имя сотрудника"/>
+                    <TextBox x:Name="CreateEmployeeNameBox" Grid.Column="0"/>
+
+                    <StackPanel Margin="0 5">
+                        <TextBlock Text="Должность"/>
+                        <ComboBox x:Name="PositionComboBox">
+                            <TextBlock Text="Сотрудник" Tag="0"/>
+                            <TextBlock Text="Стажер" Tag="1"/>
+                        </ComboBox>
+                    </StackPanel>
+                    
+                    <StackPanel Margin="0 5">
+                        <TextBlock Text="Зарплата"/>
+                        <TextBox x:Name="CreateEmployeeSalaryBox" Grid.Column="0"/>
+                    </StackPanel>
+                    <Button Content="Добавить" Margin="0 5" Click="AddEmployeeButton_Click"/>
+                </StackPanel>
+
+            </Border>
+        </Grid>
+
     </Grid>
 </Window>

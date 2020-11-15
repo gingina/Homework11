@@ -25,15 +25,11 @@ namespace WpfApplication1
         public Department(Manager manager, List<Department> insertedDepartments, string name) : this(manager, insertedDepartments, new List<Employee>(), name, DateTime.Now)
         {
             Employees = null;
-            EmployeesCount = 0;
-            InsertedDepartmentsCount = insertedDepartments.Count;
         }
 
         public Department(Manager manager, List<Employee> employees, string name) : this(manager, new List<Department>(), employees, name, DateTime.Now)
         {
             InsertedDepartments = null;
-            EmployeesCount = employees.Count;
-            InsertedDepartmentsCount = 0;
         }
 
         
@@ -59,19 +55,57 @@ namespace WpfApplication1
         public DateTime CreationDate { get; set; }
         
         /// <summary>
-        /// Наименование департамента
+        /// Наименование департамента 
         /// </summary>
         public string Name { get; set; }
-        
+
         /// <summary>
-        /// Количество сотрудников
+        /// Количество сотрудников в этом департаменте
+        /// </summary> 
+        public int EmployeesCount 
+        { 
+            get
+            {
+                if (Employees == null) return 0;
+                return Employees.Count;
+            }
+        }  
+
+        /// <summary>
+        /// Количество всех сотрудников под этим департаментом
         /// </summary>
-        public int EmployeesCount { get; set; }  
+        public int AllEmployeesCount
+        {
+            get
+            {
+                if (EmployeesCount != 0)
+                {
+                    return EmployeesCount;
+                }
+                else
+                {
+                    var sum = 0;
+                    foreach (var dep in InsertedDepartments)
+                    {
+                        sum += dep.AllEmployeesCount;
+                    }
+
+                    return sum;
+                }
+            }
+        }
 
         /// <summary>
         /// Количество вложенных департаментов
         /// </summary>
-        public int InsertedDepartmentsCount { get; set; }
+        public int InsertedDepartmentsCount
+        {
+            get
+            {
+                if (InsertedDepartments == null) return 0;
+                return InsertedDepartments.Count;
+            }
+        }
 
 
         #endregion
@@ -83,19 +117,24 @@ namespace WpfApplication1
             Employees.Add(new Intern(firstName, id, salary));
         }
 
-        public void AddEmployee(string firstName, int id, int salary)
+        public void AddWorker(string firstName, int id, int salary)
         {
-            Employees.Add(new Intern(firstName, id, salary));
+            Employees.Add(new Worker(firstName, id, salary));
         }
 
-        public void ChangeName(string newName)
+        public void RemoveEmployee(Employee employee)
         {
-            Name = newName;
+            Employees.Remove(employee);
         }
 
-        public void DeleteEmployee(int id)
+        public void RemoveDepartment(Department department)
         {
-            
+            InsertedDepartments.Remove(department);
+        }
+
+        public void AddDepartment(Department department)
+        {
+            InsertedDepartments.Add(department);
         }
         #endregion
     }

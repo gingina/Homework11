@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Net.Configuration;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,19 +24,20 @@ namespace WpfApplication1
         private Department selectedDepartment;
         private Employee selectedEmployee;
 
+        private TreeViewItem selectedDepartmentItem;
+        private TreeViewItem selectedEmployeeItem;
+
         public MainWindow()
         {
-            company = CreateDepartment();
-            //company = DeserializeJson(dataBasePath);
-
-            SerializeJson(dataBasePath);
+            company = DeserializeJson(dataBasePath);
         }
 
         public void SerializeJson(string path)
         {
             var serialized = JsonConvert.SerializeObject(company, Formatting.Indented, new JsonSerializerSettings
             {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto
             });
 
             File.WriteAllText(path, serialized);
@@ -51,24 +53,44 @@ namespace WpfApplication1
             });
         }
 
+        private void DrawTree()
+        {
+            Tree.Items.Clear();
+            var item = new TreeViewItem()
+            {
+                Header = company.Name,
+                Tag = company
+            };
+
+            item.Items.Add(null);
+
+            item.Expanded += Folder_Expanded;
+            item.Selected += Item_Selected;
+
+
+            Tree.Items.Add(item);
+        }
+
         private void Tree_Initialized(object sender, EventArgs e)
         {
-            foreach (var dep in company.InsertedDepartments)
-            {
-                var item = new TreeViewItem()
-                {
-                    Header = dep.Name,
-                    Tag = dep
-                };
+            //foreach (var dep in company.InsertedDepartments)
+            //{
+            //    var item = new TreeViewItem()
+            //    {
+            //        Header = dep.Name,
+            //        Tag = dep
+            //    };
 
-                item.Items.Add(null);
+            //    item.Items.Add(null);
 
-                item.Expanded += Folder_Expanded;
-                item.Selected += Item_Selected;
-                
+            //    item.Expanded += Folder_Expanded;
+            //    item.Selected += Item_Selected;
 
-                Tree.Items.Add(item);
-            }
+
+            //    Tree.Items.Add(item);
+            //}
+            
+            DrawTree();
         }
 
         private void Item_Selected(object sender, RoutedEventArgs e)
@@ -81,6 +103,7 @@ namespace WpfApplication1
                 SetDepartmentValues(department);
 
                 selectedDepartment = department;
+                selectedDepartmentItem = item;
             }
             else if (item.Tag is Employee)
             {
@@ -92,6 +115,7 @@ namespace WpfApplication1
 
                 SetEmployeeValues(employee);
                 SetDepartmentValues(parent);
+                selectedEmployeeItem = item;
             }
         }
 
@@ -181,6 +205,124 @@ namespace WpfApplication1
             var deps = new List<Department> { dep1, dep4 };
 
             return new Department(manager4, deps, "MainDep");
+        }
+
+        private void DepNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            selectedDepartment.Name = DepartmentNameBox.Text;
+            DrawTree();
+        }
+        private void ManagerNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            selectedDepartment.Manager.FirstName = ManagerNameBox.Text;
+            DrawTree();
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SerializeJson(dataBasePath);
+        }
+
+        private void RevertButton_Click(object sender, RoutedEventArgs e)
+        {
+            company = DeserializeJson(dataBasePath);
+            DrawTree();
+        }
+
+        private void DeleteDepartment_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (selectedDepartmentItem.Parent is TreeView) MessageBox.Show("Нельзя удалить компанию");
+            else
+            {
+                var parent = (TreeViewItem)(selectedDepartmentItem.Parent);
+                var parentDep = (Department)(parent.Tag);
+                parentDep.RemoveDepartment(selectedDepartment);
+                DrawTree();
+            }
+        }
+
+        private void DeleteEmployee_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            var parent = (TreeViewItem)(selectedEmployeeItem.Parent);
+            var parentDep = (Department)(parent.Tag);
+            parentDep.RemoveEmployee(selectedEmployee);
+            DrawTree();
+        }
+
+        private void AddDepartmentButton_Click(object sender, RoutedEventArgs e)
+        {
+            var depName = CreateDepartmentNameBox.Text;
+            var managerName = CreateManagerNameBox.Text;
+
+            var selectedItem = Tree.SelectedItem;
+
+            if (String.IsNullOrWhiteSpace(depName) || String.IsNullOrWhiteSpace(managerName))
+            {
+                MessageBox.Show("Заполни все поля");
+            }
+            else if (selectedItem == null)
+            {
+                MessageBox.Show("Выбери департамент, в котором нет сотрудников");
+            }
+            else
+            {
+                var tag = ((TreeViewItem)selectedItem).Tag;
+                if (tag is Employee || ((Department)tag).EmployeesCount != 0)
+                {
+                    MessageBox.Show("Выбери департамент, в котором нет сотрудников");
+                }
+                else
+                {
+                    var newManager = new Manager(CreateManagerNameBox.Text, company.AllEmployeesCount + 1);
+                    var newDep = new Department(newManager, new List<Department>(), new List<Employee>(), CreateDepartmentNameBox.Text, DateTime.Now);
+                    ((Department)tag).AddDepartment(newDep);
+                    DrawTree();
+                }
+            }
+        }
+
+        private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var empName = CreateEmployeeNameBox.Text;
+            var empSalary = CreateEmployeeSalaryBox.Text;
+
+            var selectedItem = Tree.SelectedItem;
+
+            if (String.IsNullOrWhiteSpace(empName) || String.IsNullOrWhiteSpace(empSalary) || PositionComboBox.SelectedIndex == -1)
+            {
+                MessageBox.Show("Заполни все поля");
+            }
+            else if (!int.TryParse(empSalary, out int _))
+            {
+                MessageBox.Show("Зарплата должна быть целочисленной");
+            }
+            else if (selectedItem == null)
+            {
+                MessageBox.Show("Выбери департамент, в котором нет внутренних департаментов");
+            }
+            else
+            {
+                var tag = ((TreeViewItem)selectedItem).Tag;
+                if (tag is Employee || ((Department)tag).InsertedDepartmentsCount != 0)
+                {
+                    MessageBox.Show("Выбери департамент, в котором нет внутренних департаментов");
+                }
+                else
+                {
+                    Employee newEmp;
+                    if (PositionComboBox.SelectedIndex == 0)
+                    {
+                        newEmp = new Worker(empName, company.AllEmployeesCount, int.Parse(empSalary));
+                    }
+                    else
+                    {
+                        newEmp = new Intern(empName, company.AllEmployeesCount, int.Parse(empSalary));
+                    }
+                    ((Department)tag).Employees.Add(newEmp);
+                    DrawTree();
+                }
+            }
         }
     }
 }
