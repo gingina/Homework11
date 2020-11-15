@@ -29,7 +29,10 @@ namespace WpfApplication1
 
         public MainWindow()
         {
-            company = DeserializeJson(dataBasePath);
+            if (File.Exists(dataBasePath))
+                company = DeserializeJson(dataBasePath);
+            else
+                company = new Department(new Manager("DefaultManager", 1), new List<Department>(), new List<Employee>(), "DefaultCompanyName", DateTime.Now);
         }
 
         public void SerializeJson(string path)
@@ -45,6 +48,7 @@ namespace WpfApplication1
 
         public Department DeserializeJson(string path)
         {
+            
             var text = File.ReadAllText(path);
 
             return JsonConvert.DeserializeObject<Department>(text, new JsonSerializerSettings 
